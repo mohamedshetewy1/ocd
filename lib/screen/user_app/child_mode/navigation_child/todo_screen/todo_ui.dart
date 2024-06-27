@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ocdear/cubit/todo_cubit/todo_cubit.dart';
+import 'package:ocdear/cubit/todo_cubit/todo_state.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/servises/guid_gen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
-import 'task.dart';
+import 'bloc/bloc_exports.dart';
+import 'model/task.dart';
 import 'package:ocdear/utils/colors.dart';
 import 'package:ocdear/utils/text_style.dart';
 
 class TodoTab extends StatefulWidget {
   const TodoTab({Key? key}) : super(key: key);
+
+  //  void _addTAsk(BuildContext context){
+  //   showModalBottomSheet(context: context, builder: (context) =>)
+  //  }
+
+  static const id = 'tasks_screen';
 
   @override
   _TodoTabState createState() => _TodoTabState();
@@ -21,7 +31,6 @@ class _TodoTabState extends State<TodoTab> {
   @override
   void initState() {
     super.initState();
-    // Load tasks from cache or main memory
     _loadTasks();
   }
 
@@ -99,12 +108,13 @@ class _TodoTabState extends State<TodoTab> {
   }
 
   Widget buildTask(Task task) {
-    String emojiAsset = task.isCompleted
+    String emojiAsset = task.isDone!
         ? 'assets/images/todo/smile.png'
-        : 'assets/images/todo/sad.png'; // Replace with your asset path
+        : 'assets/images/todo/sad.png';
+    // Replace with your asset path
 
     return Dismissible(
-      key: Key(task.text),
+      key: Key(task.title),
       direction: DismissDirection.endToStart,
       background: Container(
         color: Colors.red,
@@ -136,10 +146,12 @@ class _TodoTabState extends State<TodoTab> {
           children: [
             Checkbox(
               activeColor: AppColors.normalActive,
-              value: task.isCompleted,
+              value: task.isDone,
               onChanged: (bool? value) {
+                // context.read<TasksBloc>().add(UpdateTask(task: task));
                 setState(() {
-                  task.isCompleted = value ?? false;
+                  ////////////////////////////////////////////////////////////////
+                  task.isDone = value ?? false;
                   _saveTasks(); // Save updated tasks
                 });
               },
@@ -150,7 +162,7 @@ class _TodoTabState extends State<TodoTab> {
             ),
             const Spacer(),
             Text(
-              task.text,
+              task.title,
               style: AppTextStyle.textStyleGrey18,
             ),
           ],
@@ -201,8 +213,9 @@ class _TodoTabState extends State<TodoTab> {
                   onPressed: () {
                     setState(() {
                       tasks.add(Task(
-                        text: _taskController.text,
-                        isCompleted: false,
+                        id: GUIDGen.generate(),
+                        title: _taskController.text,
+                        isDone: false,
                       ));
                       _taskController.clear();
                       Navigator.of(context).pop();

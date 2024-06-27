@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'task.dart';
+import 'model/task.dart';
 
 Future<List<Task>> loadTasks() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

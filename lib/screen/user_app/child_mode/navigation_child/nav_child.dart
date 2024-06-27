@@ -1,7 +1,9 @@
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ocdear/cubit/layout/layout_cubit/layout_cubit.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/game_screen/games_screen.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/learning_screen/learning_screen.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/profile_screen/profile_screen.dart';
@@ -21,9 +23,11 @@ class _NavChildState extends State<NavChild> {
   @override
   void initState() {
     super.initState();
+
     _pageController = PageController(
       initialPage: _selectedIndex,
     );
+    BlocProvider.of<LayoutCubit>(context).getUserData();
   }
 
   final List<Widget> _screens = [
