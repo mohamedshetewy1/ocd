@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/profile_screen/cubit/layout_states.dart';
-import 'package:ocdear/models/profile_model.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/profile_screen/profile_model/profile_model.dart';
 import 'package:ocdear/shared/constants/constants.dart';
 
 class LayoutCubit extends Cubit<LayoutStates> {
@@ -22,7 +22,7 @@ class LayoutCubit extends Cubit<LayoutStates> {
           "http://10.0.2.2:8000/api/auth/user-profile",
         ).replace(queryParameters: {
           'token':
-              "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTk1ODQwNTYsImV4cCI6MTcxOTU4NzY1NiwibmJmIjoxNzE5NTg0MDU2LCJqdGkiOiJ4djl3RmpyRGpzZDJoUXIxIiwic3ViIjoiMTQiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.a7MnZ_sZC29lCETGMDxFLJCF-PuSRG27CS0u7loJ8tw"
+              "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MTk1OTM2MzgsImV4cCI6MTcxOTU5NzIzOCwibmJmIjoxNzE5NTkzNjM4LCJqdGkiOiJNR2E1amZwQkpBcmZLQ2VBIiwic3ViIjoiMTQiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.avM7tteEL0pI8la59jCqoTVSE1O2rq8Ls3ccnUvKIBc"
         }),
       );
 

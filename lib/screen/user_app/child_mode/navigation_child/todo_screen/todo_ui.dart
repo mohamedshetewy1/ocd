@@ -54,67 +54,69 @@ class _TodoTabState extends State<TodoTab> {
       backgroundColor: Colors.white,
       body: BlocBuilder<ToDoCubit, ToDoState>(
         builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: DottedBorder(
-                  borderType: BorderType.RRect,
-                  color: Colors.black,
-                  radius: const Radius.circular(5),
-                  borderPadding: const EdgeInsets.all(1),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _showAddTaskDialog(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(double.maxFinite, 54),
-                      foregroundColor: Colors.grey,
-                      backgroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: DottedBorder(
+                    borderType: BorderType.RRect,
+                    color: Colors.black,
+                    radius: const Radius.circular(5),
+                    borderPadding: const EdgeInsets.all(1),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _showAddTaskDialog(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(double.maxFinite, 54),
+                        foregroundColor: Colors.grey,
+                        backgroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      child: const Row(
+                        children: [
+                          Spacer(),
+                          Text('إضافة مهمة جديدة',
+                              style: AppTextStyle.textStyleGrey16),
+                          SizedBox(width: 5),
+                          Icon(
+                            Icons.add,
+                            size: 30,
+                            color: Color(0xff737373),
+                          ),
+                        ],
                       ),
                     ),
-                    child: const Row(
-                      children: [
-                        Spacer(),
-                        Text('إضافة مهمة جديدة',
-                            style: AppTextStyle.textStyleGrey16),
-                        SizedBox(width: 5),
-                        Icon(
-                          Icons.add,
-                          size: 30,
-                          color: Color(0xff737373),
-                        ),
-                      ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                if (BlocProvider.of<ToDoCubit>(context).tasks.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      'اليوم',
+                      style: AppTextStyle.textStyleBold18,
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              if (BlocProvider.of<ToDoCubit>(context).tasks.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    'اليوم',
-                    style: AppTextStyle.textStyleBold18,
-                  ),
-                ),
-              SizedBox(
-                  height: MediaQuery.sizeOf(context).height * .7,
-                  child: ListView.builder(
-                      itemCount:
-                          BlocProvider.of<ToDoCubit>(context).tasks.length,
-                      itemBuilder: (context, index) {
-                        // print(
-                        //     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA${BlocProvider.of<ToDoCubit>(context).tasks.length}");
+                SizedBox(
+                    height: MediaQuery.sizeOf(context).height * .7,
+                    child: ListView.builder(
+                        itemCount:
+                            BlocProvider.of<ToDoCubit>(context).tasks.length,
+                        itemBuilder: (context, index) {
+                          // print(
+                          //     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA${BlocProvider.of<ToDoCubit>(context).tasks.length}");
 
-                        return buildTask(
-                            BlocProvider.of<ToDoCubit>(context).tasks[index]);
-                      })),
-            ],
+                          return buildTask(
+                              BlocProvider.of<ToDoCubit>(context).tasks[index]);
+                        })),
+              ],
+            ),
           );
         },
       ),
