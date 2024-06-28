@@ -23,17 +23,17 @@ class GamesHome extends StatelessWidget {
           automaticallyImplyLeading: false,
         ),
         backgroundColor: Colors.white,
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             children: [
-              SliderHomePage(),
-              SizedBox(
+              const SliderHomePage(),
+              const SizedBox(
                 height: 32,
               ),
-              ContentDescription(description: "مغامرة الوسواس القهري"),
-              SizedBox(height: 10),
+              const ContentDescription(description: "مغامرة الوسواس القهري"),
+              const SizedBox(height: 10),
               GamesCard(),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
             ],

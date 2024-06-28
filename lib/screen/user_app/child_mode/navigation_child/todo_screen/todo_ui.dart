@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ocdear/cubit/todo_cubit/todo_cubit.dart';
-import 'package:ocdear/cubit/todo_cubit/todo_state.dart';
-import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/servises/guid_gen.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/bloc/bloc_exports.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/todo_cubit/todo_cubit.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/todo_cubit/todo_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'bloc/bloc_exports.dart';
-import 'model/task.dart';
+import 'model/task_model.dart';
 import 'package:ocdear/utils/colors.dart';
 import 'package:ocdear/utils/text_style.dart';
 
@@ -26,12 +24,17 @@ class TodoTab extends StatefulWidget {
 
 class _TodoTabState extends State<TodoTab> {
   final TextEditingController _taskController = TextEditingController();
-  List<Task> tasks = [];
+  // late List<TasksModel> tasks;
 
   @override
   void initState() {
     super.initState();
-    _loadTasks();
+    // _loadTasks();
+    BlocProvider.of<ToDoCubit>(context).getTask();
+    // tasks = BlocProvider.of<ToDoCubit>(context).tasks;
+
+    // print(
+    // "TasksModel******************${BlocProvider.of<ToDoCubit>(context).tasks.length ?? 1}");
   }
 
   @override
@@ -49,72 +52,83 @@ class _TodoTabState extends State<TodoTab> {
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: DottedBorder(
-                borderType: BorderType.RRect,
-                color: Colors.black,
-                radius: const Radius.circular(5),
-                borderPadding: const EdgeInsets.all(1),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _showAddTaskDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(double.maxFinite, 54),
-                    foregroundColor: Colors.grey,
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
+      body: BlocBuilder<ToDoCubit, ToDoState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: DottedBorder(
+                  borderType: BorderType.RRect,
+                  color: Colors.black,
+                  radius: const Radius.circular(5),
+                  borderPadding: const EdgeInsets.all(1),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _showAddTaskDialog(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(double.maxFinite, 54),
+                      foregroundColor: Colors.grey,
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    child: const Row(
+                      children: [
+                        Spacer(),
+                        Text('إضافة مهمة جديدة',
+                            style: AppTextStyle.textStyleGrey16),
+                        SizedBox(width: 5),
+                        Icon(
+                          Icons.add,
+                          size: 30,
+                          color: Color(0xff737373),
+                        ),
+                      ],
                     ),
                   ),
-                  child: const Row(
-                    children: [
-                      Spacer(),
-                      Text('إضافة مهمة جديدة',
-                          style: AppTextStyle.textStyleGrey16),
-                      SizedBox(width: 5),
-                      Icon(
-                        Icons.add,
-                        size: 30,
-                        color: Color(0xff737373),
-                      ),
-                    ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              if (BlocProvider.of<ToDoCubit>(context).tasks.isNotEmpty)
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'اليوم',
+                    style: AppTextStyle.textStyleBold18,
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (tasks.isNotEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text(
-                  'اليوم',
-                  style: AppTextStyle.textStyleBold18,
-                ),
-              ),
-            Column(
-              children: tasks.map((task) => buildTask(task)).toList(),
-            ),
-          ],
-        ),
+              SizedBox(
+                  height: MediaQuery.sizeOf(context).height * .7,
+                  child: ListView.builder(
+                      itemCount:
+                          BlocProvider.of<ToDoCubit>(context).tasks.length,
+                      itemBuilder: (context, index) {
+                        // print(
+                        //     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA${BlocProvider.of<ToDoCubit>(context).tasks.length}");
+
+                        return buildTask(
+                            BlocProvider.of<ToDoCubit>(context).tasks[index]);
+                      })),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget buildTask(Task task) {
-    String emojiAsset = task.isDone!
+  Widget buildTask(TasksModel task) {
+    String emojiAsset = task.isDone
         ? 'assets/images/todo/smile.png'
         : 'assets/images/todo/sad.png';
     // Replace with your asset path
 
     return Dismissible(
-      key: Key(task.title),
+      key: Key(task.tInsertText!),
       direction: DismissDirection.endToStart,
       background: Container(
         color: Colors.red,
@@ -127,8 +141,8 @@ class _TodoTabState extends State<TodoTab> {
       onDismissed: (direction) {
         // Remove the dismissed task from the list
         setState(() {
-          tasks.remove(task);
-          _saveTasks(); // Save updated tasks
+          // tasks.remove(task);
+          //  _saveTasks();// Save updated tasks
         });
       },
       child: Container(
@@ -152,7 +166,7 @@ class _TodoTabState extends State<TodoTab> {
                 setState(() {
                   ////////////////////////////////////////////////////////////////
                   task.isDone = value ?? false;
-                  _saveTasks(); // Save updated tasks
+                  // _saveTasks(); // Save updated tasks
                 });
               },
             ),
@@ -161,9 +175,16 @@ class _TodoTabState extends State<TodoTab> {
               scale: 0.9, // Adjust size as needed
             ),
             const Spacer(),
-            Text(
-              task.title,
-              style: AppTextStyle.textStyleGrey18,
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width * .7,
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Text(
+                  task.tInsertText ?? "",
+                  style: AppTextStyle.textStyleGrey18,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
           ],
         ),
@@ -212,14 +233,13 @@ class _TodoTabState extends State<TodoTab> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      tasks.add(Task(
-                        id: GUIDGen.generate(),
-                        title: _taskController.text,
-                        isDone: false,
-                      ));
+                      // tasks.add(TasksModel(
+                      //   tInsertText: _taskController.text,
+                      //   isDone: false,
+                      // ));
                       _taskController.clear();
                       Navigator.of(context).pop();
-                      _saveTasks(); // Save updated tasks
+                      // _saveTasks(); // Save updated tasks
                     });
                   },
                   child: const Text(
@@ -243,22 +263,24 @@ class _TodoTabState extends State<TodoTab> {
   }
 
   // Function to load tasks from cache or main memory
-  void _loadTasks() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? taskList = prefs.getStringList('tasks');
-    if (taskList != null && mounted) {
-      // Check if the widget is still mounted
-      setState(() {
-        tasks = taskList.map((task) => Task.fromMap(jsonDecode(task))).toList();
-      });
-    }
-  }
+  // void _loadTasks() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   List<String>? taskList = prefs.getStringList('tasks');
+  //   if (taskList != null && mounted) {
+  //     // Check if the widget is still mounted
+  //     setState(() {
+  //       // tasks = taskList
+  //       //     .map((task) => TasksModel.fromJson(jsonDecode(task)))
+  //       //     .toList();
+  //     });
+  //   }
+  // }
 
   // Function to save tasks to cache or main memory
-  void _saveTasks() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> taskList =
-        tasks.map((task) => jsonEncode(task.toMap())).toList();
-    prefs.setStringList('tasks', taskList);
-  }
+  // void _saveTasks() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   List<String> taskList =
+  //       tasks.map((task) => jsonEncode(task.toJson())).toList();
+  //   prefs.setStringList('tasks', taskList);
+  // }
 }

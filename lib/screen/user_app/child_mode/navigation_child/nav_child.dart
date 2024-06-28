@@ -3,10 +3,11 @@ import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ocdear/cubit/layout/layout_cubit/layout_cubit.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/profile_screen/cubit/layout_cubit.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/game_screen/games_screen.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/learning_screen/learning_screen.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/profile_screen/profile_screen.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/todo_cubit/todo_cubit.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/todo_ui.dart';
 import 'package:ocdear/utils/text_style.dart';
 
@@ -28,6 +29,7 @@ class _NavChildState extends State<NavChild> {
       initialPage: _selectedIndex,
     );
     BlocProvider.of<LayoutCubit>(context).getUserData();
+    // BlocProvider.of<ToDoCubit>(context).getTask();
   }
 
   final List<Widget> _screens = [

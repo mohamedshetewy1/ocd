@@ -1,12 +1,12 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/model/task.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/model/task_model.dart';
 import 'package:ocdear/utils/text_style.dart';
 
 class RecycleBin extends StatelessWidget {
   RecycleBin({super.key});
-  List<Task> tasks = [];
+  List<TasksModel> tasks = [];
   static const id = 'recycle_bin';
   @override
   Widget build(BuildContext context) {

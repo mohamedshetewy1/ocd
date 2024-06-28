@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ocdear/cubit/layout/layout_cubit/layout_cubit.dart';
-import 'package:ocdear/cubit/todo_cubit/todo_cubit.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/profile_screen/cubit/layout_cubit.dart';
+import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/todo_cubit/todo_cubit.dart';
 import 'package:ocdear/screen/auth/cubit/auth_cubit.dart';
 import 'package:ocdear/screen/intro/splash_screen/splash.dart';
 import 'package:ocdear/screen/user_app/child_mode/navigation_child/todo_screen/bloc/bloc_exports.dart';
@@ -20,7 +20,6 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   await CacheNetwork.cacheInitialization(key: 'access_token');
   userToken = await CacheNetwork.getCacheData(key: 'access_token');
-  ToDoCubit().getTask();
 
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
